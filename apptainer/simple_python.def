@@ -3,20 +3,19 @@ From: continuumio/miniconda3
 
 
 %post
-    # some special environment things for singularity
-    echo ". /opt/conda/etc/profile.d/conda.sh" >> $SINGULARITY_ENVIRONMENT
-    echo "conda activate pcgr" >> $SINGULARITY_ENVIRONMENT
     conda init
-
     # Create envs and install packages
     conda create --name myenv python=3.11 pandas numpy
-
-    #this line is necessary for conda activate to work
+    
     . /opt/conda/etc/profile.d/conda.sh
     conda activate myenv
-    # now you can use "pip" from inside your env
+    conda install pip
     pip install beautifulsoup4     
-
+    
+    # some special environment things for singularity
+    echo ". /opt/conda/etc/profile.d/conda.sh" >> $SINGULARITY_ENVIRONMENT
+    echo "conda activate myenv" >> $SINGULARITY_ENVIRONMENT
 %runscript
+    conda activate myenv 
     echo "Running Python script..."
     python myscript.py
