@@ -7,6 +7,12 @@ This directory provides a short and simple example to use Singularity for python
 
 It is recommended you run all of the following `apptainer` commands from a compute node on Sherlock - NOT a login node!
 
+You can get an interactive session on a compute node via...
+* OnDemand
+* `sh_dev`
+* Or `screen`/`tmux` and `salloc`
+* [See more info here](https://www.sherlock.stanford.edu/docs/user-guide/running-jobs/#interactive-jobs)
+
 ---
 
 ## Step 1: Build your container
@@ -21,6 +27,16 @@ Singularity containers are build from "recipe" files.  An example of a recipe fi
     * This is where we will install our Python packages
 * %runscript
     * The %runscript section tells Singularity what to run when the image is executed
+ 
+
+Let's quickly look at some important lines in our simple_python.def:
+* We chose a container with `conda` already installed - so no need to install `conda`!
+* A conda env is created with Python 3.11 and some packages in this line: `conda create --name myenv python=3.11 pandas numpy`
+* If you need to `conda activate` in the %post section, you need to run this special command: `. /opt/conda/etc/profile.d/conda.sh`
+* After conda is installed, you can `conda install` and `pip install` normally
+* At the end, the following lines ensure that your env is always activated.  Be sure to change `myenv` to your env name!
+    * `echo ". /opt/conda/etc/profile.d/conda.sh" >> $SINGULARITY_ENVIRONMENT`
+    * `echo "conda activate myenv" >> $SINGULARITY_ENVIRONMENT`
 
 
 Once you've filled out your recipe file with any packages, scripts, files, or other things you might need, then you build your image with the following command:
