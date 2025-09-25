@@ -16,6 +16,5 @@ From: continuumio/miniconda3
     echo ". /opt/conda/etc/profile.d/conda.sh" >> $SINGULARITY_ENVIRONMENT
     echo "conda activate myenv" >> $SINGULARITY_ENVIRONMENT
 %runscript
-    conda activate myenv 
     echo "Running Python script..."
     python myscript.py
