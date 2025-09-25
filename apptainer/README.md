@@ -51,7 +51,7 @@ This command builds the instructions from `my_recipe.def` file into an image fil
 
 You probably want to test your image before deploying it.  You can start a shell from within your image with the following command:
 
-`apptainer run path/to/image_file.sif`
+`apptainer shell path/to/image_file.sif`
 
 From this shell, you can activate your conda env, and run some python commands to test the installation.  You'll also be able to access all of the local /oak/ and /scratch/ directories for any scripts you might need
 
