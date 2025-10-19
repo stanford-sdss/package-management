@@ -66,3 +66,19 @@ R package files can be quite large, and you only have 15GB of space on your Sher
 ```
 
 This will copy over the `.lock` file that you just created, and additional useful files like the library associated with the R environment that you created and the `.Rprofile` file associated with your new environment, which can be used to deploy this environment automatically.
+
+## Step 3. Deploy your Environment from RStudio in Sherlock Open On-Demand
+
+Start an [interactive RStudio session](https://ondemand.sherlock.stanford.edu/pun/sys/dashboard/batch_connect/sys/sh_rstudio/session_contexts/new) from Sherlock Open On-Demand. This will reinstall all of your R packages, with the specified versions, into your Sherlock/Oak spaces, and will take time. We recommend keeping installation time in mind when requesting runtime length for this session.
+
+Once your session is running, navigate to the R console there on Sherlock. Set your working directory to the path on Oak where you copied over your environment file from your local machine. All of the commands in this step are for your Sherlock session.
+```r
+setwd("/path/to/your/oak/space/for/r-project/")
+getwd()
+```
+
+Now you can restore the environment, which will install all of the R packages from your local machine in your Sherlock path, which includes `/path/to/your/oak/space/for/r-project/` since you set it inside this session.
+```r
+renv::restore()
+```
+This will output which packages will be installed, which will be updated, and will inform you of any installation errors. It is likely that your machine and Sherlock might have different versions of R and RStudio, and as a result there might be some packages or package versions that are not compatible with both.
