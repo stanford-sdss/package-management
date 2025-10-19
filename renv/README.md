@@ -3,7 +3,7 @@
 A quickstart example to get you set up with environments in R using `renv`. This tutorial assumes that you are working in RStudio, which is available through [Sherlock On-Demand](https://ondemand.sherlock.stanford.edu/pun/sys/dashboard/batch_connect/sys/sh_rstudio/session_contexts/new).
 
 ---
-## Step 1: Initialize an Environment on Your Local Machine
+## Step 1: Build an R environment on your local machine
 
 We'll start by creating an environment that captures all R packages, along with their versions, on your local machine. This tutorial will show you how to capture every package, but you can also alter the [`snapshot`](https://rstudio.github.io/renv/reference/snapshot.html) command to capture packages only from your project. All the commands in this step are for your local machine.
 
@@ -55,3 +55,14 @@ Now, to capture all of the packages that are also installed in the main path on 
 renv::snapshot(type = "all", library = .libPaths(), prompt = FALSE)
 ```
 After running this command, R will output a list of packages and versions that will be included in the `.lock` file and the path at which your updated `.lock` file is located.
+
+## Step 2. Copy environment files over to Oak
+
+R package files can be quite large, and you only have 15GB of space on your Sherlock login node. For this reason, we recommend storing any R environments on Oak. If you want to use them with faster I/O on Sherlock, you can make an additional copy on $SCRATCH, but if you use this workflow, it's a good idea to make sure that you have a backup on Oak as well.
+
+`rsync` allows you to copy files from your local to Oak. Use the following command from your local machine.
+```shell
+ rsync -rltP /path/to/r-project/ $SUNETID@dtn.oak.stanford.edu:/path/to/your/oak/space/for/r-project/
+```
+
+This will copy over the `.lock` file that you just created, and additional useful files like the library associated with the R environment that you created and the `.Rprofile` file associated with your new environment, which can be used to deploy this environment automatically.
