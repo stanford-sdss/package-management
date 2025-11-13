@@ -7,9 +7,10 @@ In today's workshop we are going to cover how to create reproducible package man
 ### Today's Tutorial Agenda:
 1. What is containerization and why is it useful for package management on HPC?
 2. Building your first Apptainer container for Python using `conda`
-3. Run your first containerized batch job on Sherlock
-4. Building an Apptainer container for R using `renv`
-5. Building an Apptainer container for Julia using `Pkg`
+3. Run a script with apptainer in shell mode
+4. Run your first containerized batch job on Sherlock
+5. Building an Apptainer container for R using `renv`
+6. Building an Apptainer container for Julia using `Pkg`
 
 ### Do you have any questions? 
 Please reach out to us on our slack channel, `#sdss-compute-users`, at [sdss-compute@stanford.edu](mailto:sdss-compute@stanford.edu), or schedule a consultation with our team [here](https://sdss-compute-consultation.stanford.edu/).
