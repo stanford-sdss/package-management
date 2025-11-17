@@ -1,0 +1,25 @@
+Bootstrap: docker
+From: julia:1.10
+
+%post
+    apt-get update -y
+    apt-get install -y wget git cmake g++
+
+    # create directory for your julia env
+    mkdir -p /opt/julia/environments/v1.10/
+    export JULIA_DEPOT_PATH="/opt/julia"
+
+    # create environment in julia, install DataFrames
+    julia -e '
+        using Pkg
+        Pkg.activate("/opt/julia/environments/v1.10/")
+        Pkg.add("DataFrames")
+        Pkg.precompile()
+    '
+
+%environment
+    # set paths inside apptainer
+    export JULIA_DEPOT_PATH="/opt/julia"
+    export JULIA_PROJECT="/opt/julia/environments/v1.10/"
+
+#Used https://portal.osg-htc.org/documentation/software_examples/other_languages_tools/julia-on-osg/ as a guide
