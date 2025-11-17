@@ -22,4 +22,4 @@ From: julia:1.10
     export JULIA_DEPOT_PATH="/opt/julia"
     export JULIA_PROJECT="/opt/julia/environments/v1.10/"
 
-#Used https://portal.osg-htc.org/documentation/software_examples/other_languages_tools/julia-on-osg/ as a guide
+#Built on top of https://portal.osg-htc.org/documentation/software_examples/other_languages_tools/julia-on-osg/ 
