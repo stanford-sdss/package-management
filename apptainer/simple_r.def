@@ -1,0 +1,25 @@
+Bootstrap: docker
+From: r-base:4.3.1
+
+%post
+    apt-get update -y
+    apt-get install -y libcurl4-openssl-dev libssl-dev libxml2-dev git
+
+    # install renv
+    R -e 'install.packages("renv", repos="https://cloud.r-project.org")'
+
+    # create directory for you R env
+    mkdir -p /opt/R/environments/renv
+
+    # create environment in R, install ggplot2, and snapshot to save
+    R -e '
+        setwd("/opt/R/environments/renv")
+        renv::init(bare = TRUE)
+        renv::install("ggplot2")
+        renv::snapshot()
+    '
+
+%environment
+    # set paths inside apptainer
+    export RENV_PROJECT="/opt/R/environments/renv"
+    export R_LIBS_USER="/opt/R/environments/renv/library"
