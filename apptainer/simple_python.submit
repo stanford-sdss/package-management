@@ -7,4 +7,4 @@
 # ----------------Load Modules--------------------
 # ----------------Commands------------------------
 
-apptainer run images/simple_python.sif
+apptainer run simple_python.sif
