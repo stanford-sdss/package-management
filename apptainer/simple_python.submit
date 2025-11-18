@@ -1,0 +1,10 @@
+#!/bin/bash
+# ----------------SLURM Parameters----------------
+#SBATCH --partition=normal
+#SBATCH -c 1
+# Define how long the job will run d-hh:mm:ss
+#SBATCH --time=01:00:00
+# ----------------Load Modules--------------------
+# ----------------Commands------------------------
+
+apptainer run images/simple_python.sif
