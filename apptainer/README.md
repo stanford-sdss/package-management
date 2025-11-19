@@ -1,7 +1,7 @@
 # Using Apptainer on Sherlock!
-This directory provides a short and simple example to use Apptainer, also known as Singularity, for Python, Julia, and R.
+This directory provides a short and simple example to use Apptainer, also known as Singularity, for <a href="#python-section">Python</a>, <a href="#julia-section">Julia</a>, and <a href="#r-section">R</a>.
 
-# A step-by-step explanation for a Python container
+<h1 id="python-section">A step-by-step explanation for a Python container</h1>
 We'll walk through a step-by-step process for building an Apptainer container for Python first, and then give an overview of how to build a similar container for Julia and R afterwards.
 
 ---
@@ -68,7 +68,7 @@ This will run any commands you have in the `%runscript` section.  You can place 
 
 ---
 
-# A quick overview of a Julia container
+<h1 id="julia-section">A quick overview of a Julia container</h1>
 
 Next, we'll quickly run through how to build a similar container for Julia, using `Pkg` to manage our Julia packages. Similarly, we create a lightweight recipe file, [`simple_julia.def`](https://github.com/stanford-sdss/package-management/blob/main/apptainer/julia/simple_julia.def), available in the `julia` directory in this repository.
 
@@ -105,7 +105,7 @@ Follow the same steps as above in the Python section to test and run your image.
 
 ---
 
-# A quick overview of a Julia container
+<h1 id="r-section">A quick overview of an R container</h1>
 
 Finally, we'll also run through how to build a similar container for R, using `renv` to manage our R packages. Similarly, we create a lightweight recipe file, [`simple_r.def`](https://github.com/stanford-sdss/package-management/blob/main/apptainer/r/simple_r.def), available in the `r` directory in this repository.
 
