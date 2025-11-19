@@ -1,4 +1,4 @@
-# Using Singularity on Sherlock!
+# Using Apptainer on Sherlock!
 This directory provides a short and simple example to use Apptainer, also known as Singularity, for Python, Julia, and R.
 
 # A step-by-step explanation for a Python container
