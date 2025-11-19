@@ -23,3 +23,7 @@ From: r-base:4.3.1
     # set paths inside apptainer
     export RENV_PROJECT="/opt/R/environments/renv"
     export R_LIBS_USER="/opt/R/environments/renv/library"
+
+#%runscript
+# add any scripts that you want to run here
+# you can use explicit paths to files in /oak/ and /scratch/ to run those
