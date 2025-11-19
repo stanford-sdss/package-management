@@ -17,3 +17,11 @@ Please reach out to us on our slack channel, `#sdss-compute-users`, at [sdss-com
 
 ### Would you like to provide feedback on today's tutorial?
 Please provide anonymous feedback [here](https://forms.gle/x3wB8qMPWBbeNosR9).
+
+---
+
+# How this Repository is Organized
+This goal of this repository is to make package management easier on Sherlock and the variety of compute systems available to you on campus. As a result, it tends to be under active development as we develop materials to address specific researcher needs, so check back in!
+
+1. `apptainer`: The `apptainer` directory contains all the files that we'll be focusing on in this workshop.
+2. `renv`: The `renv` directory contains a workflow for managing R environments between your local machine and an HPC cluster like Sherlock.
