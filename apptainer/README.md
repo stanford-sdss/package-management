@@ -19,7 +19,7 @@ You can get an interactive session on a compute node via...
 
 ## Step 1: Build your container
 
-Apptainer containers are build from "recipe" files.  An example of a recipe file is [`simple_python.def`](https://github.com/stanford-sdss/package-management/blob/main/apptainer/python/simple_python.def), available in the Python directory in this repository.  A recipe file contains many different sections.  The [Singularity documentation on all sections can be found here](https://docs.sylabs.io/guides/2.6/user-guide/container_recipes.html).  For our example, these are the three sections we'll use:
+Apptainer containers are build from "recipe" files.  An example of a recipe file is [`simple_python.def`](https://github.com/stanford-sdss/package-management/blob/main/apptainer/python/simple_python.def), available in the `python` directory in this repository.  A recipe file contains many different sections.  The [Singularity documentation on all sections can be found here](https://docs.sylabs.io/guides/2.6/user-guide/container_recipes.html).  For our example, these are the three sections we'll use:
 
 1. Header
     * In the header, you'll define the base image you're working from, and where to find that image.
@@ -44,9 +44,9 @@ Let's quickly look at some important lines in our [`simple_python.def`](https://
 
 Once you've filled out your recipe file with any packages, scripts, files, or other things that you might need, then you build your image with the following command on the command line:
 
-`apptainer build path/to/image_file.sif my_recipe.def`
+`apptainer build path/to/image_file.sif simple_python.def`
 
-This command builds the instructions from `my_recipe.def` file into an image file located at `path/to/image_file.sif`.
+This command builds the instructions from `simple_python.def` file into an image file located at `path/to/image_file.sif`.
 
 
 ## Step 2: Test out your image
@@ -70,14 +70,14 @@ This will run any commands you have in the `%runscript` section.  You can place 
 
 # A quick overview of a Julia container
 
-We'll quickly run through how to build a similar container for Julia, using `Pkg` to manage our Julia packages. Similarly, we create a lightweight recipe file, [`simple_julia.def`](https://github.com/stanford-sdss/package-management/blob/main/apptainer/julia/simple_julia.def), available in the Julia directory in this repository.
+Next, we'll quickly run through how to build a similar container for Julia, using `Pkg` to manage our Julia packages. Similarly, we create a lightweight recipe file, [`simple_julia.def`](https://github.com/stanford-sdss/package-management/blob/main/apptainer/julia/simple_julia.def), available in the `julia` directory in this repository.
 
 ## Step 1: Build your container
 
 In this example, we use four sections in our container:
 
 1. Header
-    * In this example, we're using the `julia:1.10` image from Docker. Docker's Julia images are more minimal than the conda images, so we'll need to install some system level build tool in our container.
+    * In this example, we're using the `julia:1.10` image from Docker. Docker's Julia images are more minimal than the `conda` enabled images, so we'll need to install some system level build tool in our container.
 2. `%post`
     * This is where we will install system level build tools, create an organization scheme for our Julia environment/s, and install Julia packages.
 3. `environment`
@@ -92,6 +92,49 @@ Let's look at the important lines in [`simple_julia.def`](https://github.com/sta
 * We install `DataFrames` using Julia's `Pkg` in lines 13-18, ensuring that the environment is located in the space we created just above.
 * In lines 22-23, we add these paths to our container environment. By specifying `export JULIA_PROJECT="/opt/julia/environments/v1.10/"` we no longer need to manually activate the environment.
 
+When you've added any packages, scripts, files, or other items to you recipe file, then you can build your image with the following command on the command line in Sherlock:
+
+`apptainer build path/to/image_file.sif simple_julia.def`
+
+This command builds the instructions from `simple_julia.def` file into an image file located at `path/to/image_file.sif`.
+
 
 ## Steps 2 and 3: Testing and Running Your Image
+
 Follow the same steps as above in the Python section to test and run your image.
+
+---
+
+# A quick overview of a Julia container
+
+Finally, we'll also run through how to build a similar container for R, using `renv` to manage our R packages. Similarly, we create a lightweight recipe file, [`simple_r.def`](https://github.com/stanford-sdss/package-management/blob/main/apptainer/r/simple_r.def), available in the `r` directory in this repository.
+
+
+## Step 1: Build your container
+
+In this example, we use four sections in our container:
+
+1. Header
+    * In this example, we're using the `r-base:4.3.1` image from Docker. Docker's R images are more minimal than the `conda` enabled images, so we'll need to install some system level build tool in our container.
+2. `%post`
+    * This is where we will install system level build tools, create an organization scheme for our R environment/s, and install R packages.
+3. `environment`
+    * This is where we set environment variables to ensure that our R environment is always activated, similarly to the approach in the Julia recipe file.
+4. `%runscript`
+    * Run any R or shell scripts here!
+  
+Let's look at the important lines in [`simple_r.def`](https://github.com/stanford-sdss/package-management/blob/main/apptainer/julia/simple_r.def):
+* In lines 5-6 we use `apt-get` to install build tools that will help us install R packages.
+* Unlike the Python and Julia examples, this image doesn't have a package manager installed yet, so we install `renv` in line 9.
+* We create a space in our container for Julia to store environments in lines 12. 
+* We install `ggplot2` using the package manager we just installed in lines 15-20, ensuring that the environment is located in the space we created just above.
+* In lines 24-25, we add these paths to our container environment. Because of how R interacts with package managers, you will still need to explicitly specify your environment when you run R scripts.
+
+When you've added any packages, scripts, files, or other items to you recipe file, then you can build your image with the following command on the command line in Sherlock:
+
+`apptainer build path/to/image_file.sif simple_r.def`
+
+This command builds the instructions from `simple_r.def` file into an image file located at `path/to/image_file.sif`.
+
+## Steps 2 and 3: Testing and Running Your Image
+Follow the same steps as above in the Python section to test and run your image. In order to use the R environment with the packages that you installed, make sure to use `renv::load("/opt/R/environments/renv")` in your R script.
