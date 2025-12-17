@@ -25,3 +25,4 @@ This goal of this repository is to make package management easier on Sherlock an
 
 1. [`apptainer/`](https://github.com/stanford-sdss/package-management/tree/main/apptainer): The `apptainer` directory contains all the files that we'll be focusing on in this workshop.
 2. [`renv/`](https://github.com/stanford-sdss/package-management/tree/main/renv): The `renv` directory contains a workflow for managing R environments between your local machine and an HPC cluster like Sherlock.
+3. [`rstudio/`](https://github.com/stanford-sdss/package-management/tree/main/rstudio): The `rstudio` directory contains an example custom RStudio container that is compatible with [Stanford Farmshare's OpenOn Demand](https://ondemand-01.farmshare.stanford.edu).
