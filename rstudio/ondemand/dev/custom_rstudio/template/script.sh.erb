@@ -20,7 +20,7 @@ module load <%= context.auto_modules_r %>
 # Install and configure renv
 ##############
 
-# Enable automatic renv activation (needs .lock file)
+# Enable automatic renv activation, needs .lock file
 # export RENV_CONFIG_AUTOLOADER_ENABLED=TRUE
 
 # Prevent hanging if packages require prompts
@@ -38,7 +38,7 @@ if [ ! -d "$PROJECT_DIR" ]; then
     exit 1
 fi
 
-# Set user library for R (ensures renv can install packages)
+# Set user library for R, ensures renv can install packages
 export R_LIBS_USER="${HOME}/R/${R_VERSION}/user-library"
 mkdir -p "$R_LIBS_USER"
 
@@ -93,7 +93,6 @@ sed 's/^ \{2\}//' > "${RSESSION_WRAPPER_FILE}" << EOL
   # Set PROJECT_DIR
   PROJECT_DIR="${PROJECT_DIR:-$HOME}"   # fallback to home
   cd "$PROJECT_DIR" || { echo "Cannot cd to $PROJECT_DIR"; exit 1; }
-  # exec rsession --r-libs-user "${R_LIBS_USER}" "${@}"
 
   # If a .lock exists, restore packages automatically
   if [ -f "renv.lock" ]; then
@@ -122,9 +121,6 @@ sed 's/^ \{2\}//' > "${RSESSION_WRAPPER_FILE}" << EOL
 EOL
 )
 chmod 700 "${RSESSION_WRAPPER_FILE}"
-
-# Use project dir to look for .lock files
-# cd "$PROJECT_DIR"
 
 # Set container bind paths
 export APPTAINER_BINDPATH="/etc/sssd,/etc/passwd,/etc/nsswitch.conf,/var/lib/sss/pipes,/etc/environment,/farmshare,/software,/scratch,/var/spool/slurmd/conf-cache,/etc/lmod,/etc/profile.d/z00_lmod.sh,/etc/zsh/zprofile,/etc/csh/cshrc.d/z00_lmod.csh,${TMPDIR}"
