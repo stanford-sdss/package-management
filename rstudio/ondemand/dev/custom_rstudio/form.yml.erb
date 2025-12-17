@@ -1,0 +1,50 @@
+---
+title: 'RStudio'
+cluster: 'farmshare'
+
+form:
+  - bc_account
+  - bc_queue
+  - auto_modules_r
+  - fs_size
+  - fs_gpu
+  - bc_num_hours
+  - bc_email_on_started
+
+attributes:
+
+  bc_account: 'operator'
+  bc_queue: 'interactive'
+
+  auto_modules_r:
+    label: 'R version'
+    default: no
+
+  fs_size:
+    label: 'Size'
+    widget: 'select'
+    options:
+      - [ 'Tiny', 'tiny' ]
+      - [ 'Small', 'small' ]
+      - [ 'Medium', 'medium' ]
+      - [ 'Large', 'large' ]
+      - [ 'Extra Large', 'x-large' ]
+    value: 'small'
+    help: |
+      <small>
+
+        - **Tiny**: 1 core, 4 GB
+        - **Small**: 2 cores, 8 GB
+        - **Medium**: 4 cores, 16 GB
+        - **Large**: 8 cores, 32 GB
+        - **Extra Large**: 16 cores, 64 GB
+
+      </small>
+
+  fs_gpu:
+    label: 'Allocate a GPU'
+    widget: 'check_box'
+
+  bc_num_hours:
+    value: 1
+    max: 24

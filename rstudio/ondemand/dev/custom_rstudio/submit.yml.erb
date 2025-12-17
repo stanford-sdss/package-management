@@ -1,0 +1,24 @@
+---
+batch_connect:
+  template: 'basic'
+  conn_params:
+    - csrf_token
+script:
+  native: [
+    '--qos', 'interactive',
+    '--cpus-per-task',
+      <% case fs_size when "tiny" %>
+        1
+      <% when "small" %>
+        2
+      <% when "medium" %>
+        4
+      <% when "large" %>
+        8
+      <% else %>
+        16
+      <% end %>,
+    <% if fs_gpu.to_i == 1 %>
+      '--gpus', 1
+    <% end %>
+  ]

@@ -1,0 +1,149 @@
+#!/usr/bin/env bash
+
+##############
+# Load modules
+##############
+
+# Purge the module environment to avoid conflicts
+module purge
+
+# Load the apptainer module (required)
+module load apptainer
+
+# Load the gcc module (required)
+module load gcc/13
+
+# Load the requested R module (required) and r-tidyverse
+module load <%= context.auto_modules_r %>
+
+##############
+# Install and configure renv
+##############
+
+# Enable automatic renv activation (needs .lock file)
+# export RENV_CONFIG_AUTOLOADER_ENABLED=TRUE
+
+# Prevent hanging if packages require prompts
+# export RENV_CONFIG_PROMPT_DISABLED=TRUE
+
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!! (MAKE CHANGES HERE)
+# Set your project directory
+PROJECT_DIR="${HOME}/my_project" #<----- Replace `my_project` with your project dir
+export PROJECT_DIR
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
+
+# Check that the directory exists
+if [ ! -d "$PROJECT_DIR" ]; then
+    echo "ERROR: Project directory does not exist: $PROJECT_DIR"
+    exit 1
+fi
+
+# Set user library for R (ensures renv can install packages)
+export R_LIBS_USER="${HOME}/R/${R_VERSION}/user-library"
+mkdir -p "$R_LIBS_USER"
+
+# Install renv
+Rscript -e 'if (!requireNamespace("renv", quietly=TRUE)) install.packages("renv", repos="https://cran.rstudio.com")'
+
+##############
+# Start RStudio Server
+##############
+
+# PAM auth helper used by RStudio
+export RSTUDIO_AUTH="${PWD}/bin/auth"
+
+# Set temp directory
+export USERID=$(id -u $USER)
+export TMPDIR=/run/user/$USERID
+
+# Use a per-user database
+export RSTUDIO_DB_CONFIG=$PWD/etc/database.conf
+
+cat <<-EOF > $RSTUDIO_DB_CONFIG
+provider=sqlite
+directory=$TMPDIR
+pool-size=$SLURM_CPUS_ON_NODE
+EOF
+
+# Configure additional logging
+export RSTUDIO_LOG_CONFIG=$PWD/etc/logging.conf
+
+cat <<-EOF > $RSTUDIO_LOG_CONFIG
+[*]
+log-level=info
+logger-type=file
+log-dir=$PWD
+EOF
+
+# Generate an `rsession` wrapper script
+export RSESSION_WRAPPER_FILE="${PWD}/rsession.sh"
+(
+umask 077
+sed 's/^ \{2\}//' > "${RSESSION_WRAPPER_FILE}" << EOL
+  #!/usr/bin/env bash
+
+  # Log all output from this script
+  export RSESSION_LOG_FILE="${PWD}/rsession.log"
+  exec &>>"\${RSESSION_LOG_FILE}"
+
+  # Launch the original command
+  echo "Launching rsession..."
+  set -x
+
+  # Set PROJECT_DIR
+  PROJECT_DIR="${PROJECT_DIR:-$HOME}"   # fallback to home
+  cd "$PROJECT_DIR" || { echo "Cannot cd to $PROJECT_DIR"; exit 1; }
+  # exec rsession --r-libs-user "${R_LIBS_USER}" "${@}"
+
+  # If a .lock exists, restore packages automatically
+  if [ -f "renv.lock" ]; then
+    LOCKFILE="renv.lock"
+  else
+    shopt -s nullglob
+    lockfiles=( *.lock )
+    shopt -u nullglob
+    if (( ${#lockfiles[@]} == 1 )); then
+      LOCKFILE="${lockfiles[0]}"
+    elif (( ${#lockfiles[@]} > 1 )); then
+      echo "ERROR: Multiple .lock files found, no renv.lock present"
+      printf '  %s\n' "${lockfiles[@]}"
+      exit 1
+    else
+      LOCKFILE=""
+    fi
+  fi
+
+  if [ -n "${LOCKFILE}" ]; then
+    echo "Restoring environment from ${LOCKFILE}"
+    Rscript -e "setwd('${PROJECT_DIR}'); renv::restore(lockfile='${LOCKFILE}', prompt=FALSE)"
+  fi
+
+  exec rsession --r-libs-user "${R_LIBS_USER}" "\${@}"
+EOL
+)
+chmod 700 "${RSESSION_WRAPPER_FILE}"
+
+# Use project dir to look for .lock files
+# cd "$PROJECT_DIR"
+
+# Set container bind paths
+export APPTAINER_BINDPATH="/etc/sssd,/etc/passwd,/etc/nsswitch.conf,/var/lib/sss/pipes,/etc/environment,/farmshare,/software,/scratch,/var/spool/slurmd/conf-cache,/etc/lmod,/etc/profile.d/z00_lmod.sh,/etc/zsh/zprofile,/etc/csh/cshrc.d/z00_lmod.csh,${TMPDIR}"
+export USER_PATH="${PATH}"
+export R_LD_LIBRARY_PATH="${LD_LIBRARY_PATH}"
+
+# Launch the RStudio Server
+echo "Starting up rserver..."
+set -x
+apptainer run --nv \
+  --env PROJECT_DIR="$PROJECT_DIR" \
+  --env RSESSION_INITIAL_WORKING_DIRECTORY="$PROJECT_DIR" \
+  /software/containers/admin/rstudio-server/current \
+  --www-port ${port} \
+  --auth-none 0 \
+  --auth-pam-helper-path "${RSTUDIO_AUTH}" \
+  --auth-encrypt-password 0 \
+  --database-config-file "${RSTUDIO_DB_CONFIG}" \
+  --rsession-path "${RSESSION_WRAPPER_FILE}" \
+  --server-data-dir "${TMPDIR}" \
+  --server-user $(whoami) \
+  --secure-cookie-key-file "${TMPDIR}/rstudio-server/secure-cookie-key" 2>&1
