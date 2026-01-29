@@ -84,8 +84,8 @@ Next copy in the files contained in `ondemand/dev/` within [this repo](https://g
 cd
 git clone https://github.com/stanford-sdss/package-management.git
 rsync -a ~/package-management/rstudio/ ~/ondemand/dev/custom_rstudio/
-rm ~/ondemand/dev/custom-rstudio/README.md
-rm -rf ~/ondemand/dev/custom-rstudio/my_project/
+rm ~/ondemand/dev/custom_rstudio/README.md
+rm -rf ~/ondemand/dev/custom_rstudio/my_project/
 ```
 
 Once these files are in `~/ondemand/dev/`, navigate into the template directory within them.
