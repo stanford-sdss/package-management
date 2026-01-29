@@ -1,0 +1,47 @@
+Bootstrap: docker
+From: rocker/geospatial:4.5.1
+
+%post
+    apt-get update -y && apt-get install -y \
+        libssl-dev \
+        libcurl4-openssl-dev \
+        libxml2-dev \
+        git \
+        && apt-get clean
+
+    # install renv
+    R -e 'install.packages("renv", repos="https://cloud.r-project.org")'
+
+    # create directory for your R env
+    mkdir -p /opt/R/environments/renv
+
+    # create environment in R, install packages, and snapshot to save
+    R -e '
+        setwd("/opt/R/environments/renv")
+        renv::init(bare = TRUE)
+
+        #CRAN packages
+        renv::install(c(
+            "tidyverse",
+            "sf",
+            "terra",
+            "igraph",
+            "ggraph",
+            "ks",
+            "tidysdm",
+            "tidyterra",
+            "DALEX"
+        ), type = "source")
+
+        renv::snapshot()
+    '
+
+%environment
+    # set paths inside apptainer
+    export RENV_PROJECT="/opt/R/environments/renv"
+    export R_LIBS_USER="/opt/R/environments/renv/library"
+    export PATH=/usr/lib/R/bin:$PATH
+
+#%runscript
+# add any scripts that you want to run here
+# you can use explicit paths to files in /oak/ and /scratch/ to run those
