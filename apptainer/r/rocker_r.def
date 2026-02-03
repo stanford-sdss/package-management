@@ -31,7 +31,7 @@ From: rocker/geospatial:4.5.1
             "tidysdm",
             "tidyterra",
             "DALEX"
-        ), type = "source")
+        ))
 
         renv::snapshot()
     '
