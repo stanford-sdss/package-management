@@ -1,0 +1,29 @@
+Bootstrap: docker
+From: continuumio/miniconda3
+
+%post
+    conda init
+    
+    # Create environment with conda stack
+    # note: environment is named `daskenv`
+    # which we'll need for our custom kernel later
+    conda create --name daskenv python=3.11 \
+        numpy pandas xarray matplotlib \
+        rasterio pyproj dask \
+        scikit-image ipykernel \
+        graphviz python-graphviz \
+        jupyterlab -c conda-forge
+    
+    . /opt/conda/etc/profile.d/conda.sh
+    conda activate daskenv
+    
+    # pip install remaining packages
+    pip install planetary-computer \
+                stackstac \
+                pystac-client \
+                dask[distributed] \
+                dask-labextension
+    
+    # environment setup for container
+    echo ". /opt/conda/etc/profile.d/conda.sh" >> $SINGULARITY_ENVIRONMENT
+    echo "conda activate daskenv" >> $SINGULARITY_ENVIRONMENT
