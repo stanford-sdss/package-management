@@ -44,7 +44,9 @@ Let's quickly look at some important lines in our [`simple_python.def`](https://
 
 Once you've filled out your recipe file with any packages, scripts, files, or other things that you might need, then you build your image with the following command on the command line:
 
-`apptainer build path/to/image_file.sif simple_python.def`
+```bash
+apptainer build path/to/image_file.sif simple_python.def
+```
 
 This command builds the instructions from `simple_python.def` file into an image file located at `path/to/image_file.sif`.
 
@@ -53,7 +55,9 @@ This command builds the instructions from `simple_python.def` file into an image
 
 You probably want to test your image before deploying it.  You can start an Apptainer shell from within your image with the following command:
 
-`apptainer shell path/to/image_file.sif`
+```bash
+apptainer shell path/to/image_file.sif
+```
 
 From this shell, you can activate your conda environment, and run some Python commands to test the installation.  You'll also be able to access all of the local `/oak/` and `/scratch/` directories for any scripts you might need. It's a good idea to include the fully explicit paths, and not the relative paths, to any files on `/oak/` and `/scratch/`.
 
@@ -62,7 +66,9 @@ From this shell, you can activate your conda environment, and run some Python co
 
 When you're ready, you can run your image via the following command:
 
-`apptainer run path/to/image_file.sif`
+```bash
+apptainer run path/to/image_file.sif
+```
 
 This will run any commands you have in the `%runscript` section.  You can place this command in your SBATCH files to run as a batch job on Sherlock! Here's [an example](https://github.com/stanford-sdss/package-management/blob/main/apptainer/python/simple_python.submit).
 
@@ -94,7 +100,9 @@ Let's look at the important lines in [`simple_julia.def`](https://github.com/sta
 
 When you've added any packages, scripts, files, or other items to you recipe file, then you can build your image with the following command on the command line in Sherlock:
 
-`apptainer build path/to/image_file.sif simple_julia.def`
+```bash
+apptainer build path/to/image_file.sif simple_julia.def
+```
 
 This command builds the instructions from `simple_julia.def` file into an image file located at `path/to/image_file.sif`.
 
@@ -132,7 +140,9 @@ Let's look at the important lines in [`rocker_r.def`](https://github.com/stanfor
 
 When you've added any packages, scripts, files, or other items to you recipe file, then you can build your image with the following command on the command line in Sherlock:
 
-`apptainer build path/to/rocker_r_image.sif rocker_r.def`
+```bash
+apptainer build path/to/rocker_r_image.sif rocker_r.def
+```
 
 This command builds the instructions from `rocker_r.def` file into an image file located at `path/to/rocker_r_image.sif`.
 
@@ -141,4 +151,6 @@ Follow the same steps as above in the Python section to test and run your image.
 
 If you want to use your container to run a single command from the shell, you can use the `exec` function:
 
-`apptainer exec path/to/rocker_r_image.sif Rscript my_R_script.R`
+```bash
+apptainer exec path/to/rocker_r_image.sif Rscript my_R_script.R
+```
