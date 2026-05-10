@@ -123,7 +123,7 @@ In this example, we use four sections in our container:
 4. `%runscript`
     * Run any R or shell scripts here!
   
-Let's look at the important lines in [`simple_r.def`](https://github.com/stanford-sdss/package-management/blob/main/apptainer/julia/simple_r.def):
+Let's look at the important lines in [`rocker_r.def`](https://github.com/stanford-sdss/package-management/blob/main/apptainer/julia/simple_r.def):
 * In lines 5-10 we use `apt-get` to install build tools that will help us install R packages.
 * Unlike the Python and Julia examples, this image doesn't have a package manager installed yet, so we install `renv` in line 13.
 * We create a space in our container for Julia to store environments in lines 16. 
@@ -132,9 +132,13 @@ Let's look at the important lines in [`simple_r.def`](https://github.com/stanfor
 
 When you've added any packages, scripts, files, or other items to you recipe file, then you can build your image with the following command on the command line in Sherlock:
 
-`apptainer build path/to/image_file.sif simple_r.def`
+`apptainer build path/to/rocker_r_image.sif rocker_r.def`
 
-This command builds the instructions from `simple_r.def` file into an image file located at `path/to/image_file.sif`.
+This command builds the instructions from `rocker_r.def` file into an image file located at `path/to/rocker_r_image.sif`.
 
 ## Steps 2 and 3: Testing and Running Your Image
 Follow the same steps as above in the Python section to test and run your image. In order to use the R environment with the packages that you installed, make sure to use `renv::load("/opt/R/environments/renv")` in your R script.
+
+If you want to use your container to run a single command from the shell, you can use the `exec` function:
+
+`apptainer exec path/to/rocker_r_image.sif Rscript my_R_script.R`
