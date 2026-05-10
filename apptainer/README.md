@@ -107,7 +107,7 @@ Follow the same steps as above in the Python section to test and run your image.
 
 <h1 id="r-section">A quick overview of an R container</h1>
 
-Finally, we'll also run through how to build a similar container for R, using `renv` to manage our R packages. Similarly, we create a lightweight recipe file, [`simple_r.def`](https://github.com/stanford-sdss/package-management/blob/main/apptainer/r/simple_r.def), available in the `r` directory in this repository.
+Finally, we'll also run through how to build a similar container for R, using `renv` to manage our R packages. We'll create a recipe file, [`rocker_r.def`](r/rocker_r.def), available in the `r` directory in this repository. Similarly to the Python example, we're using a pre-built Docker image as a base. This allows us to build on top of the [Rocker](https://hub.docker.com/search?q=rocker) ecosystem, available on [the Docker Hub](https://hub.docker.com). The benefit of this is that we don't need to figure out how to store the best operating system for our R needs from scratch, this has already been achieved for us by the folks who build and maintain R images on Docker.
 
 
 ## Step 1: Build your container
@@ -115,20 +115,20 @@ Finally, we'll also run through how to build a similar container for R, using `r
 In this example, we use four sections in our container:
 
 1. Header
-    * In this example, we're using the `r-base:4.3.1` image from Docker. Docker's R images are more minimal than the `conda` enabled images, so we'll need to install some system level build tool in our container.
+    * In this example, we're using the `rocker/geospatial:4.5.1` image from Docker. In this case, we're picking this image because it's useful for geospatial workflows. Rocker offers many base images, including [one built for use with CUDA and GPUs](https://hub.docker.com/r/rocker/cuda) and [another built for machine learning](https://hub.docker.com/r/rocker/ml).
 2. `%post`
     * This is where we will install system level build tools, create an organization scheme for our R environment/s, and install R packages.
 3. `environment`
-    * This is where we set environment variables to ensure that our R environment is always activated, similarly to the approach in the Julia recipe file.
+    * This is where we set environment variables to ensure that our R environment is always activated and install our R packages. If you're interested in installing a Julia environment, you can that we employ a similar approach there.
 4. `%runscript`
     * Run any R or shell scripts here!
   
 Let's look at the important lines in [`simple_r.def`](https://github.com/stanford-sdss/package-management/blob/main/apptainer/julia/simple_r.def):
-* In lines 5-6 we use `apt-get` to install build tools that will help us install R packages.
-* Unlike the Python and Julia examples, this image doesn't have a package manager installed yet, so we install `renv` in line 9.
-* We create a space in our container for Julia to store environments in lines 12. 
-* We install `ggplot2` using the package manager we just installed in lines 15-20, ensuring that the environment is located in the space we created just above.
-* In lines 24-25, we add these paths to our container environment. Because of how R interacts with package managers, you will still need to explicitly specify your environment when you run R scripts.
+* In lines 5-10 we use `apt-get` to install build tools that will help us install R packages.
+* Unlike the Python and Julia examples, this image doesn't have a package manager installed yet, so we install `renv` in line 13.
+* We create a space in our container for Julia to store environments in lines 16. 
+* We install a bunch of geospatial packages using the package manager we just installed and activated in lines 13-21, ensuring that the environment is located in the space we created just above.
+* In lines 40-43, we add these paths to our container environment. Because of how R interacts with package managers, you will still need to explicitly specify your environment when you run R scripts.
 
 When you've added any packages, scripts, files, or other items to you recipe file, then you can build your image with the following command on the command line in Sherlock:
 
