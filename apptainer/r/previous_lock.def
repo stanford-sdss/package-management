@@ -1,0 +1,27 @@
+Bootstrap: docker
+From: rocker/r-ver:4.3.1
+
+%files
+    renv.lock /opt/R/environments/renv/renv.lock
+
+%post
+    apt-get update -y && apt-get install -y \
+        cmake git
+
+    # install renv
+    R -e 'install.packages("renv", repos="https://cloud.r-project.org")'
+
+    # make a dir for r envs
+    mkdir -p /opt/R/environments/renv
+
+    # restore R packages from the .lock
+    R -e 'setwd("/opt/R/environments/renv/")
+          renv::restore(lockfile="/opt/R/environments/renv/renv.lock", prompt=FALSE)
+          renv::snapshot()
+         '
+
+%environment
+    # set paths inside apptainer
+    export RENV_PROJECT="/opt/R/environments/renv"
+    export R_LIBS_USER="/opt/R/environments/renv/library"
+    export PATH=/usr/lib/R/bin:$PATH
