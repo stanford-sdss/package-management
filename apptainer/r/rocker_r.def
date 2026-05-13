@@ -3,11 +3,7 @@ From: rocker/geospatial:4.5.1
 
 %post
     apt-get update -y && apt-get install -y \
-        libssl-dev \
-        libcurl4-openssl-dev \
-        libxml2-dev \
-        git \
-        && apt-get clean
+        cmake git
 
     # install renv
     R -e 'install.packages("renv", repos="https://cloud.r-project.org")'
